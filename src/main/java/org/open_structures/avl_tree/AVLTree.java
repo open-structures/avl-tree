@@ -1,9 +1,9 @@
 package org.open_structures.avl_tree;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Consumer;
 
+import static java.lang.Math.log;
 import static java.lang.Math.max;
 import static java.util.Objects.requireNonNull;
 
@@ -19,11 +19,14 @@ public class AVLTree<T> {
         this.comparator = requireNonNull(comparator);
     }
 
+    /**
+     * Joins two trees given that every element of the left tree is not greater than any element of the right one.
+     */
     public static <T> AVLTree<T> join(AVLTree<T> left, AVLTree<T> right) {
-        if(left==null || right == null){
+        if (left == null || right == null) {
             throw new IllegalArgumentException();
         }
-        if(!left.comparator.equals(right.comparator)){
+        if (!left.comparator.equals(right.comparator)) {
             throw new IllegalArgumentException("trees have different comparators and therefore can't be joined into single search tree");
         }
 
@@ -35,7 +38,7 @@ public class AVLTree<T> {
             Comparator<? super T> comparator = left.comparator;
             AVLNode<T> leftRightmost = TreeUtils.getRightmost(left.root);
             AVLNode<T> rightLeftmost = TreeUtils.getLeftmost(right.root);
-            if(comparator.compare(leftRightmost.getValue(), rightLeftmost.getValue()) > 0){
+            if (comparator.compare(leftRightmost.getValue(), rightLeftmost.getValue()) > 0) {
                 throw new IllegalArgumentException("Values of left and right trees either overlap or trees are in the wrong order. Left has to be less than or equal to right");
             }
             left.delete(leftRightmost.getValue());
@@ -62,10 +65,16 @@ public class AVLTree<T> {
         return newNode;
     }
 
+    /**
+     * @return null if the tree is empty
+     */
     public AVLNode<T> getRoot() {
         return root;
     }
 
+    /**
+     * @return true if the tree has no nodes
+     */
     public boolean isEmpty() {
         return getRoot() == null;
     }
@@ -146,6 +155,11 @@ public class AVLTree<T> {
             }
         }
         nodesMap.remove(key);
+    }
+
+    @Override
+    public String toString() {
+        return TreeUtils.print(this);
     }
 
     private static <T> AVLTree<T> join(AVLTree<T> left, T inBetweenValue, AVLTree<T> right) {
@@ -377,4 +391,7 @@ public class AVLTree<T> {
         }
     }
 
+    public int getHeight() {
+        return (int) Math.ceil(log(nodesMap.size() + 1) / log(2));
+    }
 }

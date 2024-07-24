@@ -1,49 +1,66 @@
-# Sequence
+# AVL Tree
 
-An ordered sequence of elements with fast element look-up and insert. 
-Having [AVL tree](https://en.wikipedia.org/wiki/AVL_tree) under the hood allows these operations to have logarithmic performance.
+Java implementation of [AVL tree](https://en.wikipedia.org/wiki/AVL_tree). 
 
 ```xml
 <dependency>
     <groupId>org.open-structures</groupId>
-    <artifactId>sequence</artifactId>
+    <artifactId>avl-tree</artifactId>
     <version>1.0.0</version>
 </dependency>
 ```
 
 ## Quick start
 
-Let's create a sequence of integers
+AVL Tree can be used for any comparable elements. To create a tree you need to specify a `Comparator`:
 
-    Sequence<Integer, Integer> intSequence = new InMemorySequence<>(String::compareTo);
+    AVLTree<Integer> intTree = new AVLTree<>(Integer::compareTo);
 
-and add few elements:
+Once you have a tree you can add a bunch of elements to it:
 
-    intSequence.insert(1);
-    intSequence.insert(5);
-    intSequence.insert(15);
+    intTree.insert(1);
+    intTree.insert(5);
+    intTree.insert(15);
+    intTree.insert(999);
 
-Now we can check if the element is part of the sequence and what elements it's surrounded by:
+You can also delete elements:
 
-    intSequence.equalTo(7); // returns null
-    intSequence.lessThan(7); // returns 5
-    intSequence.greaterThan(7); // returns 15 
-    intSequence.greaterThan(15); // returns null
+    intTree.delete(15);
 
-The `Sequence` could be used for more complicated data types. For example let's say we have a `CalendarEvent` class that implements `Timeslot` interface: 
+You can traverse the tree using `AVLNode` interface. It's returned when you are getting the root note:
 
-    public interface TimeSlot {
-        Instant getStart();
-        Instant getEnd();
-    }
+    AVLNode<Integer> root = intTree.getRoot();
+    root.getValue(); // 5
+    root.getLeft().getValue(); // 1
+    root.getRight().getValue(); // 999
 
-This sequence will contain calendar events:
+`AVLNode` is also returned when you add a new element to the tree:
 
-    Sequence<CalendarEvent, Timeslot> eventsSequence = new InMemorySequence<>(timeslotComparator);
+    AVLNode<Integer> newNode = intTree.insert(-10);
+    newNode.getValue(); // -10
+    newNode.getLeft(); // null
+    newNode.getRight().getValue(); // 1
 
-Let's say our sequence contains some events. Now we can look up events using timeslots:
+If you have two trees, and all the elements of one are less than or equal to any element of the other, you can join them to get a new tree:
 
-    eventsSequence.equalTo(twelveToFive); // anything booked for this timeslot? 
-    eventsSequence.greaterThan(lunch); // what's after lunch?
+    Comparator<Integer> c = Integer::compareTo;
+    AVLTree<Integer> treeA = new AVLTree<>(c);
+    AVLTree<Integer> treeB = new AVLTree<>(c);
 
+    treeA.insert(1);
+    treeA.insert(2);
+    treeB.insert(3);
+    treeB.insert(7);
+    treeB.insert(10);
 
+    AVLTree<Integer> joinedTree = AVLTree.join(treeA, treeB);
+
+Calling `toString()` on `joinedTree` would output the following:
+
+```
+ 2
+/ \
+1  7
+  / \
+  3 10
+```    

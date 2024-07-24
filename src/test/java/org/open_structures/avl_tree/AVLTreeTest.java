@@ -414,6 +414,40 @@ public class AVLTreeTest {
         assertThat(tree.isEmpty()).isTrue();
     }
 
+    @Test
+    public void shouldGetHeight() {
+        // when and then
+        assertThat(tree.getHeight()).isZero();
+
+        // and given
+        tree.insert(1);
+
+        // when and then
+        assertThat(tree.getHeight()).isOne();
+
+        // and given
+        tree.insert(2);
+
+        // when and then
+        assertThat(tree.getHeight()).isEqualTo(2);
+
+        // and given
+        tree.insert(3);
+        tree.insert(4);
+
+        // when and then
+        assertThat(tree.getHeight()).isEqualTo(3);
+
+        // and given
+        tree.insert(5);
+        tree.insert(6);
+        tree.insert(7);
+        tree.insert(8);
+
+        // when and then
+        assertThat(tree.getHeight()).isEqualTo(4);
+    }
+
     private static int height(AVLNode<Integer> node) {
         int leftChildHeight = node.getLeft() != null ? height(node.getLeft()) : 0;
         int rightChildHeight = node.getRight() != null ? height(node.getRight()) : 0;
