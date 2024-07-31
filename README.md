@@ -1,6 +1,8 @@
 # AVL Tree
 
-Java implementation of [AVL tree](https://en.wikipedia.org/wiki/AVL_tree). 
+Java implementation of [AVL tree](https://en.wikipedia.org/wiki/AVL_tree), a type of self-balancing binary search tree
+that ensures that operations such as insertion, deletion, 
+and lookup are performed in O(log n) time.
 
 ```xml
 <dependency>
